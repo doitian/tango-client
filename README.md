@@ -1,5 +1,7 @@
 # Tango::Client
 
+[![Build Status](https://travis-ci.org/doitian/tango-client.png)](https://travis-ci.org/doitian/tango-client)
+
 HTTP client to ease using Tango API
 
 ## Installation
