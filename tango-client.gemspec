@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["ian@intridea.com"]
   gem.description   = %q{HTTP client to ease using Tango API}
   gem.summary       = %q{HTTP client to ease using Tango API}
-  gem.homepage      = ""
+  gem.homepage      = "http://github.com/doitian/tango-client"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
