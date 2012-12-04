@@ -30,8 +30,22 @@ module Tango
       request(:post, path, params)
     end
 
+    # Get user available balance
+    # @return [Integer] balance in cents (100 = $1.00)
+    # @see https://github.com/tangocarddev/General/blob/master/Tango_Card_Service_API.md#getavailablebalance
     def get_available_balance
-      request :post, 'GetAvailableBalance'
+      response = post 'GetAvailableBalance'
+      balance = response[:body][:availableBalance]
+    end
+
+    # Purchase a card
+    # @params params [Hash] Request parameters. Parameter username and
+    #                password are not used, specify them through client options.
+    # @return [Hash] "response" part of the returned JSON. All keys are symbols.
+    # @see https://github.com/tangocarddev/General/blob/master/Tango_Card_Service_API.md#purchasecard
+    def purchase_card(params = {})
+      response = post 'PurchaseCard', params
+      response[:body]
     end
 
     # Returns a Faraday::Connection object

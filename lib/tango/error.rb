@@ -25,10 +25,17 @@ module Tango
       @wrapped_exception.respond_to?(:backtrace) ? @wrapped_exception.backtrace : super
     end
 
-    class ClientError < Tango::Error;
+    class ClientError < Tango::Error
+      def self.raise_on?(status_code)
+        400 <= status_code && status_code < 500
+      end
     end
 
     class ServerError < Tango::Error;
+      def self.raise_on?(status_code)
+        500 <= status_code && status_code < 600
+      end
+
       attr_accessor :response
 
       # Fetches value from response by key
@@ -44,7 +51,7 @@ module Tango
       end
 
       def self.from_response(body)
-        if body && body[:responseType]
+        if body.is_a?(Hash) && body[:responseType]
           type = body[:responseType]
           class_name = response_type_to_class_name(type)
           if Tango::Error.const_defined?(class_name)
@@ -55,7 +62,7 @@ module Tango
           ex.response = body[:response]
           ex
         else
-          new(body)
+          new("Invalid response: #{body.to_s}")
         end
       end
     end

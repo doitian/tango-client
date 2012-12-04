@@ -36,10 +36,7 @@ describe Tango::Client do
       end
     end
 
-    let!(:env) { client.get_available_balance }
-
-    it 'dumps username and password as JSON body' do
-      env[:response_headers]['Request-Body'].should == %q({"username":"ian","password":"secret"})
-    end
+    subject { client.get_available_balance }
+    it { should == 873431432 }
   end
 end

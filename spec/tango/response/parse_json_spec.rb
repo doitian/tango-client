@@ -18,8 +18,29 @@ describe Tango::Response::ParseJson do
   context 'POST {"string":"hello"} with no content type' do
     let(:env) { conn.post('/echo', %q[{"string":"hello"}]).env }
 
-    it 'parse response JSON to object' do
-      env[:body].should == { :string => 'hello' }
+    it 'raises ServerError' do
+      expect { env }.to raise_error(Tango::Error::ServerError)
+    end
+  end
+  context 'POST {"responseType":"SUCCESS","response":"OK"}' do
+    let(:env) { conn.post('/echo', %q[{"responseType":"SUCCESS","response":"OK"}]).env }
+
+    it 'raise ServerError' do
+      expect { env }.to raise_error(Tango::Error::ServerError)
+    end
+  end
+  context 'POST {"responseType":"SUCCESS","response":{"status":"OK"}}' do
+    let(:env) { conn.post('/echo', %q[{"responseType":"SUCCESS","response":{"status":"OK"}}]).env }
+
+    it 'returns {:status => "OK"}' do
+      env[:body].should == { :status => "OK" }
+    end
+  end
+  context 'POST {"responseType":"INV_INPUT"}' do
+    it 'raises InvInput' do
+      expect {
+        conn.post('/echo', %q[{"responseType":"INV_INPUT"}])
+      }.to raise_error ::Tango::Error::InvInput
     end
   end
 end

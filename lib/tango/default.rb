@@ -1,12 +1,14 @@
 require 'tango/version'
+require 'tango/error'
 require 'tango/request/json_encoded'
 require 'tango/response/parse_json'
+require 'tango/response/raise_error'
 require 'faraday'
 
 module Tango
   module Default
-    INTEGRATION_ENDPOINT = 'https://int.tangocard.com'
-    PRODUCTION_ENDPOINT = 'https://api.tangocard.com'
+    INTEGRATION_ENDPOINT = 'https://int.tangocard.com' unless defined?(::Tango::Default::INTEGRATION_ENDPOINT)
+    PRODUCTION_ENDPOINT = 'https://api.tangocard.com' unless defined?(::Tango::Default::PRODUCTION_ENDPOINT)
 
     ENDPOINT = INTEGRATION_ENDPOINT unless defined?(::Tango::Default::ENDPOINT)
 
@@ -14,8 +16,12 @@ module Tango
       # Encode request params into JSON for PUT/POST requests
       builder.use ::Tango::Request::JsonEncoded
 
+      builder.use ::Tango::Response::RaiseError, ::Tango::Error::ClientError
+
       # Parse response JSON
       builder.use ::Tango::Response::ParseJson
+
+      builder.use ::Tango::Response::RaiseError, ::Tango::Error::ServerError
 
       builder.adapter Faraday.default_adapter
 
@@ -37,10 +43,10 @@ module Tango
     VERSION = 'Version2' unless defined?(::Tango::Default::VERSION)
 
     def self.options
-      {
+      @options ||= {
         :username => ENV['TANGO_USERNAME'] || 'third_party_int@tangocard.com',
         :password => ENV['TANGO_PASSWORD'] || 'integrateme',
-        :endpoint => ENDPOINT,
+        :endpoint => ENV['TANGO_ENDPOINT'] || ENDPOINT,
         :version => VERSION,
         :middleware => MIDDLEWARE.dup,
         :connection_options => CONNECTION_OPTIONS.clone
