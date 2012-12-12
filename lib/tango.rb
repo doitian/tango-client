@@ -23,7 +23,7 @@ module Tango
     #
     # @return [Hash]
     def options
-      @options ||= ::Tango::Default.options.dup
+      @options ||= ::Tango::Default.template.dup
     end
 
     if RUBY_VERSION >= "1.9"

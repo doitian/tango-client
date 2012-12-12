@@ -48,9 +48,17 @@ module Tango
         :password => ENV['TANGO_PASSWORD'] || 'integrateme',
         :endpoint => ENV['TANGO_ENDPOINT'] || ENDPOINT,
         :version => VERSION,
-        :middleware => MIDDLEWARE.dup,
-        :connection_options => CONNECTION_OPTIONS.clone
+        :middleware => MIDDLEWARE,
+        :connection_options => CONNECTION_OPTIONS
       }
+    end
+
+    def self.template
+      template = options.dup
+      template[:middleware] = options[:middleware].dup
+      template[:connection_options] = options[:connection_options].dup
+
+      template
     end
   end
 end

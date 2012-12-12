@@ -22,7 +22,7 @@ module Tango
     # @option options [Faraday::Builder] middleware Faraday's middleware stack
     # @option options [Hash] connection_options Further options for Faraday connection
     def initialize(options = {})
-      @options = ::Tango::Default.options.merge(options)
+      @options = ::Tango::Default.template.merge(options)
     end
 
     # Perform an HTTP POST request
